@@ -1,9 +1,11 @@
 import React from "react";
 import "./Machine.css";
+import Header from "../../components/Header/Header";
 
 export default function Machine() {
   return (
     <div className="machine-root">
+        <Header />
       <div className="machine-main">
         <div className="machine-cards">
           <div className="machine-row">

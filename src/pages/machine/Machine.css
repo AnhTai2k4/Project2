@@ -1,7 +1,8 @@
 .machine-root {
     background: #e5e5e5;
     min-height: 100vh;
-    padding: 32px 0 0 0;
+    display: flex;
+    flex-direction: column;
     font-family: sans-serif;
   }
   
@@ -12,6 +13,7 @@
     gap: 24px;
     max-width: 1400px;
     margin: 0 auto;
+    
   }
   
   .machine-cards {
