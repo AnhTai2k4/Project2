@@ -55,10 +55,10 @@ const DeviceCard = ({ title, color, selectDevice, deleteDevice }) => (
 
 const ChooseDevice = () => {
     const [devices, setDevices] = useState([
-        { title: "Ban công", color: "#FF7B7B" },
-        { title: "Vườn 1", color: "#FFB84D" },
-        { title: "Vườn 2", color: "#90EE90" },
-        { title: "Tầng thượng", color: "#A9A9A9" },
+        { title: "Ban công", color: "#FF8080" },
+        { title: "Vườn 1", color: "#F7D060" },
+        { title: "Vườn 2", color: "#98D8AA" },
+        { title: "Tầng thượng", color: "#888888" },
     ]);
     const navigate = useNavigate();
     const handleDelete = (indexToDelete) => {

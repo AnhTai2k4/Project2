@@ -14,6 +14,9 @@ import "./Machine.css";
 import Header from "../../components/Header/Header";
 import tempIcon from "../../assets/temp.svg";
 import pumpIcon from "../../assets/pump.svg";
+import airIcon from "../../assets/humidity_air.svg";
+import earthIcon from "../../assets/humidity_earth.svg";
+import lightIcon from "../../assets/light.svg";
 
 export default function Machine() {
     const [water, setWater] = useState(50);
@@ -62,11 +65,8 @@ export default function Machine() {
                         {/* Độ ẩm không khí */}
                         <div className="machine-card top2">
                             <div className="machine-card-header">
-                                <span className="icon-small">🍃</span>
-                                <div>
-                                    <div className="label">Độ ẩm</div>
-                                    <div className="sub-label">không khí</div>
-                                </div>
+                                <img src={airIcon} alt="" />
+                                <span>Độ ẩm không khí</span>
                                 <span className="value">68%</span>
                             </div>
                             <ResponsiveContainer width="100%" height={300}>
@@ -89,11 +89,8 @@ export default function Machine() {
                         {/* Độ ẩm đất */}
                         <div className="machine-card top4">
                             <div className="machine-card-header">
-                                <span className="icon-small">💧</span>
-                                <div>
-                                    <div className="label">Độ ẩm</div>
-                                    <div className="sub-label">trong đất</div>
-                                </div>
+                                <img src={earthIcon} alt="" />
+                                <span>Độ ẩm đất</span>
                                 <span className="value">42%</span>
                             </div>
                             <ResponsiveContainer width="100%" height={300}>
@@ -114,11 +111,8 @@ export default function Machine() {
                         {/* Cường độ ánh sáng */}
                         <div className="machine-card top5">
                             <div className="machine-card-header">
-                                <span className="icon-small">☀️</span>
-                                <div>
-                                    <div className="label">Cường độ</div>
-                                    <div className="sub-label">ánh sáng</div>
-                                </div>
+                                <img src={lightIcon} alt="" />
+                                <span>Cường độ ánh sáng</span>
                                 <span className="value">825 lux</span>
                             </div>
                             <ResponsiveContainer width="100%" height={300}>
@@ -142,26 +136,26 @@ export default function Machine() {
                 <div className="machine-pump-col">
                     <div className="machine-card top3 machine-pump-card">
                         <div style={{ width: "100%", marginBottom: 8 }}>
-                            <div className="machine-card-header">
+                            <div className="pump-group">
                                 <img
                                     src={pumpIcon}
                                     alt=""
                                     className="pump-icon"
                                 />
-                                <div style={{ flex: 1 }}>
-                                    <div className="machine-pump-bar">
-                                        <input
-                                            type="range"
-                                            className="slider"
-                                            min={0}
-                                            max={100}
-                                            value={water}
-                                            onChange={(e) =>
-                                                setWater(Number(e.target.value))
-                                            }
-                                        />
+                                <label style={{ width: "100%" }}>
+                                    <input
+                                        type="range"
+                                        min={100}
+                                        max={1000}
+                                        step={50}
+                                        // value={form.amount}
+                                        // onChange={handleAmountChange}
+                                        className="schedule-slider"
+                                    />
+                                    <div className="schedule-slider-label">
+                                        500 ml
                                     </div>
-                                </div>
+                                </label>
                             </div>
                             <button className="machine-pump-btn">
                                 Bơm ngay

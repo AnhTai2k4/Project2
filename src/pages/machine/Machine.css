@@ -59,10 +59,17 @@
   border-top: 6px solid #FFBE0B;
 }
 
-.machine-card-header {
+.machine-card-header,
+.pump-group {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 10px;
+}
+
+.machine-card-header img {
+  width: 30px;
+  height: 30px;
 }
 
 .icon {

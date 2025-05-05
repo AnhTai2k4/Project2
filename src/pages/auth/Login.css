@@ -1,0 +1,111 @@
+.login-container {
+    background-color: #5B913B;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 70px;
+}
+
+.login-container img {
+    height: 60px;
+}
+
+.login-box {
+    width: 450px;
+    border-radius: 25px;
+    margin: 20px auto;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 50px 30px;
+    gap: 20px;
+}
+
+.login-box>span:first-child {
+    font-size: 25px;
+    font-weight: 600;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.input-group span {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.input-group div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: #e1f0d5;
+    height: 40px;
+    border-radius: 50px;
+    padding-left: 15px;
+}
+
+.input-group div:focus-within {
+    box-shadow: 0 0 3px 1.5px #297423;
+    border-color: #348E2B;
+}
+
+.input-group i {
+    font-size: 16px;
+    color: #348E2B
+}
+
+.input-group input {
+    border: none;
+    background-color: inherit;
+    color: #348E2B;
+    padding-left: 10px;
+    width: 100%;
+    height: 100%;
+    border-radius: 50px;
+    font-size: 16px;
+}
+
+.input-group input:focus-visible {
+    outline: none;
+}
+
+.input-group input::placeholder {
+    color: #348E2B;
+    font-size: 14px;
+}
+
+.login-box button {
+    background-color: #348E2B;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    width: 100%;
+    height: 40px;
+    border: none;
+    margin-top: 10px;
+}
+
+.login-box button:hover {
+    background-color: #338e2bcb;
+}
+
+.register-action {
+    text-decoration: none;
+    color: #348E2B;
+    cursor: pointer;
+    font-weight: 600;
+}

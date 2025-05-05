@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import "./Schedule.css";
 import Header from "../../components/Header/Header";
-import trashIcon from "../../assets/trash.svg";
+import trashIcon from "../../assets/dark_trash.svg";
 import calendarIcon from "../../assets/calendar.svg";
+import clockIcon from "../../assets/clock.svg";
 
 export default function Schedule() {
     // State mẫu cho lịch tưới
@@ -113,7 +114,7 @@ export default function Schedule() {
 
                 <div className="schedule-list-card scrollable">
                     <div className="schedule-list-title">
-                        <span className="icon">🕒</span>
+                        <img src={clockIcon} alt="" className="medium-icon"/>
                         Lịch tưới cây
                     </div>
                     <div className="schedule-list">
@@ -157,7 +158,7 @@ export default function Schedule() {
                 <div className="schedule-form-card">
                     <div className="schedule-form-title">
                         <span className="icon">
-                            <img src={calendarIcon} alt="" />
+                            <img src={calendarIcon} alt="" className="medium-icon" />
                         </span>
                         Thêm lịch tưới mới
                     </div>

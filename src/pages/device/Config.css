@@ -1,0 +1,73 @@
+.config-container {
+    width: 500px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.config-container h2 {
+    color: #348E2B;
+    margin-bottom: 5px;
+}
+
+.config-container>span {
+    margin-bottom: 20px;
+}
+
+.config-container .select-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.select-group span {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.select-group div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: #e1f0d5;
+    height: 40px;
+    border-radius: 50px;
+    padding-left: 15px;
+    padding-right: 10px;
+}
+
+.select-group div:focus-within {
+    box-shadow: 0 0 3px 1.5px #297423;
+    border-color: #348E2B;
+}
+
+.select-group i {
+    font-size: 16px;
+    color: #348E2B
+}
+
+.select-group select {
+    border: none;
+    background-color: inherit;
+    color: #348E2B;
+    padding-left: 10px;
+    width: 100%;
+    height: 100%;
+    border-radius: 50px;
+    font-size: 16px;
+}
+
+.select-group select:focus-visible {
+    outline: none;
+}
+
+.icon-btn {
+    width: auto !important;
+    padding: 0 10px;
+}
+
+.icon-btn i {
+    margin-left: 5px;
+}
