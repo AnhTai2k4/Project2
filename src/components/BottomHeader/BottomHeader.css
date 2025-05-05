@@ -1,0 +1,31 @@
+.bottom-header-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: #E1F0D5;
+    height: 60px;
+    align-items: center;
+    color: #348E2B;
+    padding: 20px;
+}
+
+.device-group span {
+    font-weight: 700;
+}
+
+.icon-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.icon-group img {
+    width: 40px;
+    height: 40px;
+}
+
+.update-time {
+    display: flex;
+    flex-direction: column;
+}
