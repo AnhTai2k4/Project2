@@ -5,10 +5,11 @@ import {
     Route,
     Navigate,
 } from "react-router-dom";
-import Login from "./components/auth/Login.jsx";
-import Register from "./components/auth/Register.jsx";
-import Config from "./components/device/Config.jsx";
-import ChooseDevice from "./components/device/ChooseDevice.jsx";
+import Login from "./pages/auth/Login.jsx";
+import Register from "./pages/auth/Register.jsx";
+import Config from "./pages/device/Config.jsx";
+import ChooseDevice from "./pages/device/ChooseDevice.jsx";
+import Machine from "./pages/machine/Machine.jsx";
 
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/choose-device" element={<ChooseDevice />} />
                 <Route path="/" element={<Navigate to="/login" replace />} />
+                <Route path="/machine" element={<Machine />} />
             </Routes>
         </Router>
     );
