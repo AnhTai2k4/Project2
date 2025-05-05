@@ -18,3 +18,36 @@
     width: 40px;
     height: 40px;
 }
+
+
+.menu {
+    position: absolute;
+    top: 70px;
+    right: 170px;
+    width: 150px;
+    z-index: 10;
+    background-color: #8fcb6d;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.page-nav {
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.page-nav:hover {
+    background-color: #ffffff99;
+    border-radius: 5px;
+}
+
+.page-nav span i {
+    margin-right: 10px;
+}
+
+.hidden {
+    display: none;
+}

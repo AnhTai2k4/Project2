@@ -1,0 +1,19 @@
+.devices {
+    width: 70%;
+    margin: 0 auto;
+}
+
+.devices-trash-icon {
+    width: 100%;
+    text-align: end;
+}
+
+.devices-trash-icon img {
+    width: 30px;
+    height: 30px;
+}
+
+.devices-trash-icon img:hover {
+    background-color: #ffffff99;
+    border-radius: 5px;
+}
