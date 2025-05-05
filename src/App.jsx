@@ -10,7 +10,7 @@ import Register from "./pages/auth/Register.jsx";
 import Config from "./pages/device/Config.jsx";
 import ChooseDevice from "./pages/device/ChooseDevice.jsx";
 import Machine from "./pages/machine/Machine.jsx";
-
+import Schedule from "./pages/schedule/Schedule.jsx";
 function App() {
     return (
         <Router>
@@ -21,6 +21,7 @@ function App() {
                 <Route path="/choose-device" element={<ChooseDevice />} />
                 <Route path="/" element={<Navigate to="/login" replace />} />
                 <Route path="/machine" element={<Machine />} />
+                <Route path="/schedule" element={<Schedule />} />
             </Routes>
         </Router>
     );
