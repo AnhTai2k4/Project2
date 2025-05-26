@@ -61,6 +61,8 @@ const ConfigSuccess = () => {
             if (isValid) {
                 const res = await sendRequest();
                 if (res.status === 200) {
+                    const data = await res.json();
+                    sessionStorage.setItem("topic", data.topic);
                     navigate(`/machine`);
                 } else {
                     alert("Unexpected error. Please try again.");

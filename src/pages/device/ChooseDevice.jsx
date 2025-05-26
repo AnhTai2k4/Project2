@@ -69,18 +69,22 @@ const ChooseDevice = () => {
 
                 const response = await fetch(`${apiUrl}/api/login/devices`, {
                     headers: {
-                        "Authorization": `Bearer ${token}`
-                    }
+                        Authorization: `Bearer ${token}`,
+                    },
                 });
 
                 if (response.ok) {
                     const deviceMap = await response.json();
                     // Convert device map to array with colors
-                    const deviceList = Object.entries(deviceMap).map(([deviceName, topic], index) => ({
-                        title: deviceName,
-                        topic: topic,
-                        color: ["#FF8080", "#F7D060", "#98D8AA", "#888888"][index % 4]
-                    }));
+                    const deviceList = Object.entries(deviceMap).map(
+                        ([deviceName, topic], index) => ({
+                            title: deviceName,
+                            topic: topic,
+                            color: ["#FF8080", "#F7D060", "#98D8AA", "#888888"][
+                                index % 4
+                            ],
+                        })
+                    );
                     setDevices(deviceList);
                 } else {
                     console.error("Failed to fetch devices");
@@ -116,6 +120,14 @@ const ChooseDevice = () => {
                                 title={device.title}
                                 color={device.color}
                                 selectDevice={() => {
+                                    sessionStorage.setItem(
+                                        "topic",
+                                        device.topic
+                                    );
+                                    sessionStorage.setItem(
+                                        "device",
+                                        device.title
+                                    );
                                     navigate("/machine");
                                 }}
                                 deleteDevice={() => {

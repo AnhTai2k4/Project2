@@ -7,7 +7,7 @@ const BottomHeader = () => {
     return (
         <div className="bottom-header-container">
             <div className="device-group">
-                <span>Thiết bị: </span> Ban công
+                <span>Thiết bị: </span> {sessionStorage.getItem("device")}
             </div>
             <div className="icon-group">
                 <img src={waterIcon} alt="" /> 95%

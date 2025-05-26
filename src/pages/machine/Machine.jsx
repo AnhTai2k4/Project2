@@ -20,6 +20,7 @@ import airIcon from "../../assets/humidity_air.svg";
 import earthIcon from "../../assets/humidity_earth.svg";
 import lightIcon from "../../assets/light.svg";
 import apiUrl from "../../config/api";
+import { connectWebSocket } from "../../services/wsClient";
 
 export default function Machine() {
     const [duration, setDuration] = useState(10);
@@ -34,13 +35,19 @@ export default function Machine() {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
+        connectWebSocket(sessionStorage.getItem("topic"));
+    }, []);
+
+    useEffect(() => {
         setIsLoading(true);
         const token = sessionStorage.getItem("token");
 
         const sendRequest = async () => {
             const getRecent = async (token) => {
                 return await fetch(
-                    `${apiUrl}/api/data-streaming/recent?topic=u5/dnull-null`,
+                    `${apiUrl}/api/data-streaming/recent?topic=${sessionStorage.getItem(
+                        "topic"
+                    )}`,
                     {
                         method: "GET",
                         headers: {
@@ -65,23 +72,26 @@ export default function Machine() {
             try {
                 const res = await getRecent(token);
                 const data = await res.json();
-                const parsed = data.map((item) => JSON.parse(item));
+                console.log(data);
 
-                const air = parsed.map((obj, index) => ({
-                    name: `Day ${index + 1}`,
-                    value: obj.air,
-                }));
-                const soil = parsed.map((obj, index) => ({
-                    name: `Day ${index + 1}`,
-                    value: obj.soil,
-                }));
-                const temp = parsed.map((obj, index) => ({
-                    name: `Day ${index + 1}`,
-                    value: obj.temp,
-                }));
-                setChartAir(air);
-                setChartSoil(soil);
-                setChartTemp(temp);
+                // const parsed = await res.json();
+                // // const parsed = data.map((item) => JSON.parse(item));
+
+                // const air = parsed.map((obj, index) => ({
+                //     name: `Day ${index + 1}`,
+                //     value: obj.air,
+                // }));
+                // const soil = parsed.map((obj, index) => ({
+                //     name: `Day ${index + 1}`,
+                //     value: obj.soil,
+                // }));
+                // const temp = parsed.map((obj, index) => ({
+                //     name: `Day ${index + 1}`,
+                //     value: obj.temp,
+                // }));
+                // setChartAir(air);
+                // setChartSoil(soil);
+                // setChartTemp(temp);
             } catch (e) {
                 console.error("Get recent error: ", e);
             } finally {
