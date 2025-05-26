@@ -17,6 +17,7 @@ import pumpIcon from "../../assets/pump.svg";
 import airIcon from "../../assets/humidity_air.svg";
 import earthIcon from "../../assets/humidity_earth.svg";
 import lightIcon from "../../assets/light.svg";
+import apiUrl from "../../config/api";
 
 export default function Machine() {
     const [duration, setDuration] = useState(10);
@@ -24,111 +25,51 @@ export default function Machine() {
     const [airHumidity, setAirHumidity] = useState(0);
     const [soilHumidity, setSoilHumidity] = useState(0);
     const [lightIntensity, setLightIntensity] = useState(0);
-    const [chartData, setChartData] = useState([]);
-    const [token, setToken] = useState(null);
+    const [chartTemp, setChartTemp] = useState([]);
+    const [chartAir, setChartAir] = useState([]);
+    const [chartSoil, setChartSoil] = useState([]);
+    const [chartLight, setChartLight] = useState([]);
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const token = sessionStorage.getItem("token");
-                if (!token) {
-                    console.error("No token found");
-                    return;
-                }
+        const token = sessionStorage.getItem("token");
 
-                // Add device pairs first
-                const username = "tai@gmail.com"; // Replace with actual username
-                const topics = [
-                    "u5/dnull-null",
-                    "air-humidity",
-                    "soil-humidity",
-                    "light-intensity",
-                ];
-
-                for (const topic of topics) {
-                    try {
-                        await fetch(
-                            `http://localhost:8080/api/device-pair?username=${username}&topic=${topic}`,
-                            {
-                                method: "POST",
-                                headers: {
-                                    Authorization: `Bearer ${token}`,
-                                },
-                            }
-                        );
-                        console.log(`Added device pair for topic: ${topic}`);
-                    } catch (error) {
-                        console.error(
-                            `Error adding device pair for ${topic}:`,
-                            error
-                        );
+        const sendRequest = async () => {
+            const getRecent = async (token) => {
+                return await fetch(
+                    `${apiUrl}/api/data-streaming/recent?topic=u5/dnull-null`,
+                    {
+                        method: "GET",
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
                     }
-                }
-
-                // Subscribe to topics
-                await dataStreamService.subscribe("u5/dnull-null", token);
-                await dataStreamService.subscribe("air-humidity", token);
-                await dataStreamService.subscribe("soil-humidity", token);
-                await dataStreamService.subscribe("light-intensity", token);
-
-                // Fetch initial data
-                const tempData = await dataStreamService.getRecentMessages(
-                    "u5/dnull-null",
-                    token
                 );
-                const airHumidityData =
-                    await dataStreamService.getRecentMessages(
-                        "air-humidity",
-                        token
-                    );
-                const soilHumidityData =
-                    await dataStreamService.getRecentMessages(
-                        "soil-humidity",
-                        token
-                    );
-                const lightData = await dataStreamService.getRecentMessages(
-                    "light-intensity",
-                    token
-                );
+            };
 
-                // Update state with latest values
-                if (tempData && tempData.length > 0) {
-                    setTemperature(tempData[tempData.length - 1].value);
-                }
-                if (airHumidityData && airHumidityData.length > 0) {
-                    setAirHumidity(
-                        airHumidityData[airHumidityData.length - 1].value
-                    );
-                }
-                if (soilHumidityData && soilHumidityData.length > 0) {
-                    setSoilHumidity(
-                        soilHumidityData[soilHumidityData.length - 1].value
-                    );
-                }
-                if (lightData && lightData.length > 0) {
-                    setLightIntensity(lightData[lightData.length - 1].value);
-                }
-
-                // Update chart data
-                setChartData(tempData || []);
-            } catch (error) {
-                console.error(
-                    "Error fetching data:",
-                    error.response?.data || error.message
+            const subcribe = async (token) => {
+                return await fetch(
+                    `${apiUrl}/api/data-streaming/subscribe?topic=u5/dnull-null`,
+                    {
+                        method: "POST",
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
                 );
+            };
+
+            try {
+                const res = await getRecent(token);
+                const data = await res.json();
+                const parsed = data.map((item) => JSON.parse(item));
+            } catch (e) {
+                console.error("Get recent error: ", e);
+            } finally {
             }
         };
 
-        fetchData();
-
-        // Cleanup function to unsubscribe from topics
-        return () => {
-            dataStreamService.unsubscribe("u5/dnull-null", token);
-            dataStreamService.unsubscribe("air-humidity", token);
-            dataStreamService.unsubscribe("soil-humidity", token);
-            dataStreamService.unsubscribe("light-intensity", token);
-        };
-    }, [token]);
+        if (token) sendRequest();
+    }, []);
 
     return (
         <div className="machine-root">
@@ -145,7 +86,7 @@ export default function Machine() {
                             </div>
 
                             <ResponsiveContainer width="100%" height={300}>
-                                <LineChart data={chartData}>
+                                <LineChart data={chartTemp}>
                                     <CartesianGrid strokeDasharray="3 3" />
                                     <YAxis width={30} />
                                     <Tooltip />
@@ -166,7 +107,7 @@ export default function Machine() {
                                 <span className="value">{airHumidity}%</span>
                             </div>
                             <ResponsiveContainer width="100%" height={300}>
-                                <LineChart data={chartData}>
+                                <LineChart data={chartAir}>
                                     <CartesianGrid strokeDasharray="3 3" />
                                     <YAxis width={30} />
                                     <Tooltip />
@@ -189,7 +130,7 @@ export default function Machine() {
                                 <span className="value">{soilHumidity}%</span>
                             </div>
                             <ResponsiveContainer width="100%" height={300}>
-                                <LineChart data={chartData}>
+                                <LineChart data={chartSoil}>
                                     <CartesianGrid strokeDasharray="3 3" />
                                     <YAxis width={30} />
                                     <Tooltip />
@@ -212,7 +153,7 @@ export default function Machine() {
                                 </span>
                             </div>
                             <ResponsiveContainer width="100%" height={300}>
-                                <LineChart data={chartData}>
+                                <LineChart data={chartLight}>
                                     <CartesianGrid strokeDasharray="3 3" />
                                     <YAxis width={30} />
                                     <Tooltip />
@@ -243,7 +184,7 @@ export default function Machine() {
                                         min={0.5}
                                         max={60}
                                         step={0.5}
-                                        value={water}
+                                        value={duration}
                                         onChange={(e) =>
                                             setDuration(e.target.value)
                                         }
