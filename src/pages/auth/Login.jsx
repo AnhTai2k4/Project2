@@ -14,6 +14,8 @@ const Login = () => {
     const [errors, setErrors] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -64,10 +66,6 @@ const Login = () => {
                         ...prevErrors,
                         username: "Invalid username or password",
                     }));
-                } else {
-                    toast.error("Unexpected error. Please try again.", {
-                        autoClose: 3000,
-                    });
                 }
             }
         } catch (e) {
