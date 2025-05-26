@@ -19,7 +19,7 @@ import earthIcon from "../../assets/humidity_earth.svg";
 import lightIcon from "../../assets/light.svg";
 
 export default function Machine() {
-    const [water, setWater] = useState(50);
+    const [duration, setDuration] = useState(10);
 
     const data = [
         { name: "Day 1", value: 400 },
@@ -32,6 +32,10 @@ export default function Machine() {
         { name: "Day 8", value: 510 },
         { name: "Day 9", value: 370 },
     ];
+
+    const handleChangeDuration = (e) => {
+        setDuration(e.target.value);
+    };
 
     return (
         <div className="machine-root">
@@ -145,15 +149,15 @@ export default function Machine() {
                                 <label style={{ width: "100%" }}>
                                     <input
                                         type="range"
-                                        min={100}
-                                        max={1000}
-                                        step={50}
-                                        // value={form.amount}
-                                        // onChange={handleAmountChange}
+                                        min={0.5}
+                                        max={60}
+                                        step={0.5}
+                                        value={duration}
+                                        onChange={handleChangeDuration}
                                         className="schedule-slider"
                                     />
                                     <div className="schedule-slider-label">
-                                        500 ml
+                                        {duration} phút
                                     </div>
                                 </label>
                             </div>
@@ -166,13 +170,13 @@ export default function Machine() {
                                 <thead>
                                     <tr>
                                         <th>Thời điểm</th>
-                                        <th>Lượng nước</th>
+                                        <th>Khoảng thời gian bơm</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td>14/04/2025 22:30</td>
-                                        <td>100 ml</td>
+                                        <td>10 phút</td>
                                     </tr>
                                 </tbody>
                             </table>

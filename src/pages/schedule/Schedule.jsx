@@ -11,56 +11,56 @@ export default function Schedule() {
         {
             time: "6:30",
             repeat: "Hàng ngày",
-            amount: 500,
+            duration: 500,
             enabled: false,
             days: [],
         },
         {
             time: "18:30",
             repeat: "T2, T4, T6",
-            amount: 250,
+            duration: 250,
             enabled: true,
             days: [2, 4, 6],
         },
         {
             time: "18:30",
             repeat: "T2, T4, T6",
-            amount: 250,
+            duration: 250,
             enabled: true,
             days: [2, 4, 6],
         },
         {
             time: "18:30",
             repeat: "T2, T4, T6",
-            amount: 250,
+            duration: 250,
             enabled: true,
             days: [2, 4, 6],
         },
         {
             time: "18:30",
             repeat: "T2, T4, T6",
-            amount: 250,
+            duration: 250,
             enabled: true,
             days: [2, 4, 6],
         },
         {
             time: "18:30",
             repeat: "T2, T4, T6",
-            amount: 250,
+            duration: 250,
             enabled: true,
             days: [2, 4, 6],
         },
         {
             time: "18:30",
             repeat: "T2, T4, T6",
-            amount: 250,
+            duration: 250,
             enabled: true,
             days: [2, 4, 6],
         },
         {
             time: "18:30",
             repeat: "T2, T4, T6",
-            amount: 250,
+            duration: 250,
             enabled: true,
             days: [2, 4, 6],
         },
@@ -71,7 +71,7 @@ export default function Schedule() {
         repeatType: "daily",
         repeatEvery: 1,
         selectedDays: [3, 5, 7],
-        amount: 500,
+        duration: 15,
     });
 
     // Xử lý toggle bật/tắt lịch
@@ -99,10 +99,10 @@ export default function Schedule() {
     };
 
     // Xử lý thay đổi lượng nước
-    const handleAmountChange = (e) => {
+    const handledurationChange = (e) => {
         setForm((form) => ({
             ...form,
-            amount: Number(e.target.value),
+            duration: Number(e.target.value),
         }));
     };
 
@@ -114,7 +114,7 @@ export default function Schedule() {
 
                 <div className="schedule-list-card scrollable">
                     <div className="schedule-list-title">
-                        <img src={clockIcon} alt="" className="medium-icon"/>
+                        <img src={clockIcon} alt="" className="medium-icon" />
                         Lịch tưới cây
                     </div>
                     <div className="schedule-list">
@@ -130,7 +130,7 @@ export default function Schedule() {
                                         {item.time}
                                     </div>
                                     <div className="schedule-item-desc">
-                                        {item.repeat} | {item.amount}ml
+                                        {item.repeat} | {item.duration}ml
                                     </div>
                                 </div>
                                 <div className="schedule-item-actions">
@@ -158,7 +158,11 @@ export default function Schedule() {
                 <div className="schedule-form-card">
                     <div className="schedule-form-title">
                         <span className="icon">
-                            <img src={calendarIcon} alt="" className="medium-icon" />
+                            <img
+                                src={calendarIcon}
+                                alt=""
+                                className="medium-icon"
+                            />
                         </span>
                         Thêm lịch tưới mới
                     </div>
@@ -247,15 +251,15 @@ export default function Schedule() {
                         <label style={{ width: "100%" }}>
                             <input
                                 type="range"
-                                min={100}
-                                max={1000}
-                                step={50}
-                                value={form.amount}
-                                onChange={handleAmountChange}
+                                min={0.5}
+                                max={60}
+                                step={0.5}
+                                value={form.duration}
+                                onChange={handledurationChange}
                                 className="schedule-slider"
                             />
                             <div className="schedule-slider-label">
-                                {form.amount} ml
+                                {form.duration} phút
                             </div>
                         </label>
                     </div>

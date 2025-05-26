@@ -61,7 +61,6 @@ const Config = () => {
                             className="icon-btn"
                             onClick={() => {
                                 checkConfigWifi();
-                                // navigate("/machine");
                             }}
                         >
                             Tôi đã kết nối với ESP_Config

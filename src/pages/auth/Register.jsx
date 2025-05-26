@@ -63,11 +63,8 @@ const Register = () => {
                         username: "Username is used",
                     }));
                 } else {
-                    toast.error("Unexpected error. Please try again.", {
-                        autoClose: 3000,
-                    });
+                    alert("Unexpected error. Please try again.");
                 }
-                const data = await res.json();
             }
         } catch (e) {
             console.error("Sign up error: ", e);
@@ -194,7 +191,6 @@ const Register = () => {
                     <button
                         onClick={() => {
                             handleSubmit();
-                            // navigate("/config");
                         }}
                     >
                         Đăng ký

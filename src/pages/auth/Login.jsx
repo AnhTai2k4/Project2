@@ -32,7 +32,6 @@ const Login = () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    // Esp8266: "add-device-register",
                 },
                 body: JSON.stringify({
                     username: account.email,
@@ -65,9 +64,7 @@ const Login = () => {
                         username: "Invalid username or password",
                     }));
                 } else {
-                    toast.error("Unexpected error. Please try again.", {
-                        autoClose: 3000,
-                    });
+                    alert("Unexpected error. Please try again.");
                 }
             }
         } catch (e) {
@@ -175,7 +172,6 @@ const Login = () => {
                     <button
                         onClick={() => {
                             handleSubmit();
-                            // navigate("/choose-device");
                         }}
                     >
                         Đăng nhập
