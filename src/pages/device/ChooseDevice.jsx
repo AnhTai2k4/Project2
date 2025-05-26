@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Typography, Grid, Card, CardContent } from "@mui/material";
 import LocalFloristIcon from "@mui/icons-material/LocalFlorist";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,7 @@ import TopHeader from "../../components/TopHeader/TopHeader";
 import "./ChooseDevice.css";
 import treeIcon from "../../assets/tree.svg";
 import trashIcon from "../../assets/trash.svg";
+import apiUrl from "../../config/api";
 
 const DeviceCard = ({ title, color, selectDevice, deleteDevice }) => (
     <Card
@@ -54,13 +55,44 @@ const DeviceCard = ({ title, color, selectDevice, deleteDevice }) => (
 );
 
 const ChooseDevice = () => {
-    const [devices, setDevices] = useState([
-        { title: "Ban công", color: "#FF8080" },
-        { title: "Vườn 1", color: "#F7D060" },
-        { title: "Vườn 2", color: "#98D8AA" },
-        { title: "Tầng thượng", color: "#888888" },
-    ]);
+    const [devices, setDevices] = useState([]);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchDevices = async () => {
+            try {
+                const token = sessionStorage.getItem("token");
+                if (!token) {
+                    navigate("/login");
+                    return;
+                }
+
+                const response = await fetch(`${apiUrl}/api/login/devices`, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const deviceMap = await response.json();
+                    // Convert device map to array with colors
+                    const deviceList = Object.entries(deviceMap).map(([deviceName, topic], index) => ({
+                        title: deviceName,
+                        topic: topic,
+                        color: ["#FF8080", "#F7D060", "#98D8AA", "#888888"][index % 4]
+                    }));
+                    setDevices(deviceList);
+                } else {
+                    console.error("Failed to fetch devices");
+                }
+            } catch (error) {
+                console.error("Error fetching devices:", error);
+            }
+        };
+
+        fetchDevices();
+    }, [navigate]);
+
     const handleDelete = (indexToDelete) => {
         const newDevices = devices.filter((_, i) => i !== indexToDelete);
         setDevices(newDevices);
