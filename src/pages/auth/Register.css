@@ -12,7 +12,7 @@
     align-items: center;
 }
 
-.register-container span {
+.register-container>span {
     text-align: center;
     margin-bottom: 20px;
 }
@@ -33,7 +33,7 @@
     border-radius: 25px;
     padding: 20px 20px 20px;
     align-items: end;
-    width: 100%;
+    width: 400px;
 }
 
 .form-card .title {

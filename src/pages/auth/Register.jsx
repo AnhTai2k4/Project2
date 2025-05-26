@@ -1,97 +1,213 @@
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { PropagateLoader } from "react-spinners";
+
 import "./Register.css";
-import existedIcon from "../../assets/exist.svg";
-import newIcon from "../../assets/new.svg";
+import apiUrl from "../../config/api";
+import logo from "../../assets/logo.svg";
 
 const Register = () => {
+    const passwordRegex = /^[A-Za-z0-9]{8,}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const [account, setAccount] = useState(null);
+    const [errors, setErrors] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setAccount((pre) => ({ ...pre, [name]: value }));
+    };
+
+    const handleInput = (e) => {
+        const { name } = e.target;
+        setErrors({ ...errors, [name]: "" });
+    };
+
+    const handleSubmit = async () => {
+        setIsLoading(true);
+        const sendRequest = async () => {
+            return await fetch(`${apiUrl}/api/register/new-user`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Esp8266: "add-device-register",
+                },
+                body: JSON.stringify({
+                    username: account.email,
+                    password: account.password,
+                }),
+            });
+        };
+
+        try {
+            let isValid = true;
+            for (let prop in account) {
+                if (account[prop] === "") {
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        [prop]: "Required",
+                    }));
+
+                    isValid = false;
+                }
+            }
+            if (isValid) {
+                const res = await sendRequest();
+                if (res.status === 200) {
+                    navigate(`/login`);
+                } else if (res.status === 409) {
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        username: "Username is used",
+                    }));
+                } else {
+                    toast.error("Unexpected error. Please try again.", {
+                        autoClose: 3000,
+                    });
+                }
+                const data = await res.json();
+            }
+        } catch (e) {
+            console.error("Sign up error: ", e);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleBlur = (e) => {
+        const { name, value } = e.target;
+        if (value.trim() === "") {
+            setErrors({ ...errors, [name]: "Required" });
+            return;
+        }
+        switch (name) {
+            case "password":
+                if (!passwordRegex.test(value)) {
+                    setErrors({
+                        ...errors,
+                        [name]: "Must be at least 8 characters with letter and number, no special or non-ASCII characters.",
+                    });
+                }
+                break;
+            case "confirmPassword":
+                if (value !== account.password) {
+                    setErrors({
+                        ...errors,
+                        [name]: "The passwords you entered do not match.",
+                    });
+                }
+                break;
+            case "email":
+                if (!emailRegex.test(value)) {
+                    setErrors({
+                        ...errors,
+                        [name]: "Invalid email address.",
+                    });
+                }
+                break;
+            default:
+                break;
+        }
+    };
+
     return (
-        <div className="white-container">
-            <div className="register-container">
-                <h2>Đăng ký thiết bị</h2>
-                <span>
-                    Chọn tài khoản bạn muốn sử dụng để theo dõi thiết bị này
-                    hoặc tạo tài khoản mới
-                </span>
-                <div className="cards-group">
-                    <div className="form-card">
-                        <div className="title">
-                            <img src={existedIcon} alt="" /> Thêm thiết bị vào
-                            một tài khoản đã tồn tại
-                        </div>
-                        <div className="form-group">
-                            <div className="input-group">
-                                <div>
-                                    <input type="email" placeholder="Email" />
-                                </div>
+        <>
+            <div
+                className={`dark-overlay overlay overall-overlay ${
+                    isLoading ? "" : "hidden"
+                }`}
+            >
+                <PropagateLoader
+                    color="#36d7b7"
+                    loading={isLoading}
+                    size={35}
+                />
+            </div>
+            <div className="login-container">
+                <img src={logo} alt="" />
+                <div className="login-box">
+                    <span>Đăng ký</span>
+                    <div className="form-group">
+                        <div className="input-group">
+                            <span>Email</span>
+                            <div>
+                                <i className="fa-solid fa-user"></i>
+                                <input
+                                    name="email"
+                                    type="email"
+                                    placeholder="Email"
+                                    value={account?.email}
+                                    onChange={handleChange}
+                                    onInput={handleInput}
+                                    onBlur={handleBlur}
+                                />
                             </div>
-                            <div className="input-group">
-                                <div>
-                                    <input
-                                        type="password"
-                                        placeholder="Nhập mật khẩu"
-                                    />
-                                </div>
-                            </div>
+                            {errors?.email && (
+                                <span className="error-message">
+                                    {errors?.email}
+                                </span>
+                            )}
                         </div>
-                        <button
-                            onClick={() => {
-                                navigate("/config");
-                            }}
-                        >
-                            Thêm
-                        </button>
+                        <div className="input-group">
+                            <span>Mật khẩu</span>
+                            <div>
+                                <i className="fa-solid fa-key"></i>
+                                <input
+                                    name="password"
+                                    type="password"
+                                    placeholder="Nhập mật khẩu"
+                                    value={account?.password}
+                                    onChange={handleChange}
+                                    onInput={handleInput}
+                                    onBlur={handleBlur}
+                                />
+                            </div>
+                            {errors?.password && (
+                                <span className="error-message">
+                                    {errors?.password}
+                                </span>
+                            )}
+                        </div>
+                        <div className="input-group">
+                            <span>Nhập lại mật khẩu</span>
+                            <div>
+                                <i className="fa-solid fa-key"></i>
+                                <input
+                                    name="confirmPassword"
+                                    type="password"
+                                    placeholder="Nhập lại mật khẩu"
+                                    value={account?.confirmPassword}
+                                    onChange={handleChange}
+                                    onInput={handleInput}
+                                    onBlur={handleBlur}
+                                />
+                            </div>
+                            {errors?.confirmPassword && (
+                                <span className="error-message">
+                                    {errors?.confirmPassword}
+                                </span>
+                            )}
+                        </div>
                     </div>
-                    <div className="form-card">
-                        <div className="title">
-                            <img src={newIcon} alt="" /> Tạo tài khoản mới
-                        </div>
-                        <div className="form-group">
-                            <div className="name">
-                                <div className="input-group">
-                                    <div>
-                                        <input type="text" placeholder="Tên" />
-                                    </div>
-                                </div>
-                                <div className="input-group">
-                                    <div>
-                                        <input type="text" placeholder="Họ" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="input-group">
-                                <div>
-                                    <input type="email" placeholder="Email" />
-                                </div>
-                            </div>
-                            <div className="input-group">
-                                <div>
-                                    <input
-                                        type="password"
-                                        placeholder="Nhập mật khẩu"
-                                    />
-                                </div>
-                            </div>
-                            <div className="input-group">
-                                <div>
-                                    <input
-                                        type="password"
-                                        placeholder="Nhập lại mật khẩu"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <button
-                            onClick={() => {
-                                navigate("/config");
-                            }}
-                        >
-                            Đăng ký
-                        </button>
-                    </div>
+                    <button
+                        onClick={() => {
+                            handleSubmit();
+                            // navigate("/config");
+                        }}
+                    >
+                        Đăng ký
+                    </button>
+                    <span>
+                        Đã có tài khoản?{" "}
+                        <Link to="/login" className="register-action">
+                            Đăng nhập
+                        </Link>
+                    </span>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

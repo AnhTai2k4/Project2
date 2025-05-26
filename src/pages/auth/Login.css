@@ -4,7 +4,7 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
-    padding-top: 70px;
+    padding-top: 30px;
 }
 
 .login-container img {
@@ -41,7 +41,7 @@
     width: 100%;
 }
 
-.input-group span {
+.input-group>span:first-child {
     font-weight: 600;
     font-size: 16px;
     margin-bottom: 5px;
@@ -85,6 +85,11 @@
 .input-group input::placeholder {
     color: #348E2B;
     font-size: 14px;
+}
+
+.input-group>.error-message {
+    color: rgba(241, 79, 79, 0.863);
+    font-size: 12px;
 }
 
 .login-box button {
