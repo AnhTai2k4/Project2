@@ -10,42 +10,48 @@ import {
 } from "recharts";
 import { useState, useEffect } from "react";
 import { PropagateLoader } from "react-spinners";
+import { format } from "date-fns";
 
-import { dataStreamService } from "../../services/dataStreamService";
 import "./Machine.css";
 import Header from "../../components/Header/Header";
 import tempIcon from "../../assets/temp.svg";
 import pumpIcon from "../../assets/pump.svg";
 import airIcon from "../../assets/humidity_air.svg";
 import earthIcon from "../../assets/humidity_earth.svg";
-import lightIcon from "../../assets/light.svg";
 import apiUrl from "../../config/api";
 import { connectWebSocket } from "../../services/wsClient";
+import CustomTooltip from "../../components/CustomToolTip/CustomToolTip";
 
 export default function Machine() {
     const [duration, setDuration] = useState(10);
     const [temperature, setTemperature] = useState(0);
     const [airHumidity, setAirHumidity] = useState(0);
     const [soilHumidity, setSoilHumidity] = useState(0);
-    const [lightIntensity, setLightIntensity] = useState(0);
     const [chartTemp, setChartTemp] = useState([]);
     const [chartAir, setChartAir] = useState([]);
     const [chartSoil, setChartSoil] = useState([]);
-    const [chartLight, setChartLight] = useState([]);
+    const [historyWatering, setHistoryWatering] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        connectWebSocket(sessionStorage.getItem("topic"));
+        const handleMessage = (message) => {
+            const data = JSON.parse(message);
+            setAirHumidity(data.air);
+            setSoilHumidity(data.soil);
+            setTemperature(data.temp);
+        };
+        connectWebSocket(sessionStorage.getItem("topic"), handleMessage);
     }, []);
 
     useEffect(() => {
-        setIsLoading(true);
+        // setIsLoading(true);
         const token = sessionStorage.getItem("token");
+        if (!token) return;
 
         const sendRequest = async () => {
-            const getRecent = async (token) => {
+            const getRecent = async () => {
                 return await fetch(
-                    `${apiUrl}/api/data-streaming/recent?topic=${sessionStorage.getItem(
+                    `${apiUrl}/api/data-streaming/recent-data?topic=${sessionStorage.getItem(
                         "topic"
                     )}`,
                     {
@@ -57,41 +63,26 @@ export default function Machine() {
                 );
             };
 
-            const subcribe = async (token) => {
-                return await fetch(
-                    `${apiUrl}/api/data-streaming/subscribe?topic=u5/dnull-null`,
-                    {
-                        method: "POST",
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
-            };
-
             try {
-                const res = await getRecent(token);
-                const data = await res.json();
-                console.log(data);
+                const res = await getRecent();
+                const parsed = await res.json();
+                parsed.reverse();
 
-                // const parsed = await res.json();
-                // // const parsed = data.map((item) => JSON.parse(item));
-
-                // const air = parsed.map((obj, index) => ({
-                //     name: `Day ${index + 1}`,
-                //     value: obj.air,
-                // }));
-                // const soil = parsed.map((obj, index) => ({
-                //     name: `Day ${index + 1}`,
-                //     value: obj.soil,
-                // }));
-                // const temp = parsed.map((obj, index) => ({
-                //     name: `Day ${index + 1}`,
-                //     value: obj.temp,
-                // }));
-                // setChartAir(air);
-                // setChartSoil(soil);
-                // setChartTemp(temp);
+                const air = parsed.map((obj) => ({
+                    name: obj.timestamp,
+                    value: obj.air,
+                }));
+                const soil = parsed.map((obj) => ({
+                    name: obj.timestamp,
+                    value: obj.soil,
+                }));
+                const temp = parsed.map((obj) => ({
+                    name: obj.timestamp,
+                    value: obj.temp,
+                }));
+                setChartAir(air);
+                setChartSoil(soil);
+                setChartTemp(temp);
             } catch (e) {
                 console.error("Get recent error: ", e);
             } finally {
@@ -99,7 +90,72 @@ export default function Machine() {
             }
         };
 
-        if (token) sendRequest();
+        sendRequest();
+    }, []);
+
+    const handlePump = async () => {
+        const token = sessionStorage.getItem("token");
+        if (!token) return;
+
+        setIsLoading(true);
+        const sendRequest = async (token) => {
+            return await fetch(`${apiUrl}/api/watering/start`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    deviceId: sessionStorage.getItem("deviceId"),
+                    deviceName: sessionStorage.getItem("device"),
+                    duration: duration * 60,
+                }),
+            });
+        };
+
+        try {
+            const res = await sendRequest(token);
+            if (res.ok) {
+                getHistoryWatering();
+            }
+        } catch (e) {
+            console.error("Pump error: ", e);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const getHistoryWatering = async () => {
+        const token = sessionStorage.getItem("token");
+        if (!token) return;
+        const sendRequest = async () => {
+            return await fetch(
+                `${apiUrl}/api/watering/recent-log?deviceId=${sessionStorage.getItem(
+                    "deviceId"
+                )}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem(
+                            "token"
+                        )}`,
+                    },
+                }
+            );
+        };
+
+        try {
+            const res = await sendRequest();
+            if (res.ok) {
+                const data = await res.json();
+                setHistoryWatering(data);
+            }
+        } catch (e) {
+            console.error("Get history watering error: ", e);
+        }
+    };
+
+    useEffect(() => {
+        getHistoryWatering();
     }, []);
 
     return (
@@ -131,11 +187,34 @@ export default function Machine() {
                                 </div>
 
                                 <ResponsiveContainer width="100%" height={300}>
-                                    <LineChart data={chartTemp}>
+                                    <LineChart
+                                        data={chartTemp}
+                                        margin={{ bottom: 20 }}
+                                    >
                                         <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis
+                                            dataKey="name"
+                                            tickFormatter={(value) =>
+                                                format(
+                                                    new Date(value),
+                                                    "HH:mm dd/MM"
+                                                )
+                                            }
+                                            tick={{ fontSize: 10 }}
+                                            interval={0}
+                                            angle={-45}
+                                            textAnchor="end"
+                                        />
                                         <YAxis width={30} />
-                                        <Tooltip />
-                                        <Legend />
+                                        <Tooltip
+                                            content={
+                                                <CustomTooltip
+                                                    attribute="Nhiệt độ"
+                                                    unit="°C"
+                                                />
+                                            }
+                                        />
+                                        {/* <Legend /> */}
                                         <Line
                                             type="monotone"
                                             dataKey="value"
@@ -144,6 +223,8 @@ export default function Machine() {
                                     </LineChart>
                                 </ResponsiveContainer>
                             </div>
+                        </div>
+                        <div className="machine-row">
                             {/* Độ ẩm không khí */}
                             <div className="machine-card top2">
                                 <div className="machine-card-header">
@@ -154,11 +235,34 @@ export default function Machine() {
                                     </span>
                                 </div>
                                 <ResponsiveContainer width="100%" height={300}>
-                                    <LineChart data={chartAir}>
+                                    <LineChart
+                                        data={chartAir}
+                                        margin={{ bottom: 20 }}
+                                    >
                                         <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis
+                                            dataKey="name"
+                                            tickFormatter={(value) =>
+                                                format(
+                                                    new Date(value),
+                                                    "HH:mm dd/MM"
+                                                )
+                                            }
+                                            tick={{ fontSize: 10 }}
+                                            interval={0}
+                                            angle={-45}
+                                            textAnchor="end"
+                                        />
                                         <YAxis width={30} />
-                                        <Tooltip />
-                                        <Legend />
+                                        <Tooltip
+                                            content={
+                                                <CustomTooltip
+                                                    attribute="Độ ẩm không khí"
+                                                    unit="%"
+                                                />
+                                            }
+                                        />
+                                        {/* <Legend /> */}
                                         <Line
                                             type="monotone"
                                             dataKey="value"
@@ -179,34 +283,34 @@ export default function Machine() {
                                     </span>
                                 </div>
                                 <ResponsiveContainer width="100%" height={300}>
-                                    <LineChart data={chartSoil}>
+                                    <LineChart
+                                        data={chartSoil}
+                                        margin={{ bottom: 20 }}
+                                    >
                                         <CartesianGrid strokeDasharray="3 3" />
-                                        <YAxis width={30} />
-                                        <Tooltip />
-                                        <Legend />
-                                        <Line
-                                            type="monotone"
-                                            dataKey="value"
-                                            stroke="#8884d8"
+                                        <XAxis
+                                            dataKey="name"
+                                            tickFormatter={(value) =>
+                                                format(
+                                                    new Date(value),
+                                                    "HH:mm dd/MM"
+                                                )
+                                            }
+                                            tick={{ fontSize: 10 }}
+                                            interval={0}
+                                            angle={-45}
+                                            textAnchor="end"
                                         />
-                                    </LineChart>
-                                </ResponsiveContainer>
-                            </div>
-                            {/* Cường độ ánh sáng */}
-                            <div className="machine-card top5">
-                                <div className="machine-card-header">
-                                    <img src={lightIcon} alt="" />
-                                    <span>Cường độ ánh sáng</span>
-                                    <span className="value">
-                                        {lightIntensity} lux
-                                    </span>
-                                </div>
-                                <ResponsiveContainer width="100%" height={300}>
-                                    <LineChart data={chartLight}>
-                                        <CartesianGrid strokeDasharray="3 3" />
                                         <YAxis width={30} />
-                                        <Tooltip />
-                                        <Legend />
+                                        <Tooltip
+                                            content={
+                                                <CustomTooltip
+                                                    attribute="Độ ẩm đất"
+                                                    unit="%"
+                                                />
+                                            }
+                                        />
+                                        {/* <Legend /> */}
                                         <Line
                                             type="monotone"
                                             dataKey="value"
@@ -244,7 +348,10 @@ export default function Machine() {
                                         </div>
                                     </label>
                                 </div>
-                                <button className="machine-pump-btn">
+                                <button
+                                    className="machine-pump-btn"
+                                    onClick={handlePump}
+                                >
                                     Bơm ngay
                                 </button>
                             </div>
@@ -257,10 +364,24 @@ export default function Machine() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>14/04/2025 22:30</td>
-                                            <td>10 phút</td>
-                                        </tr>
+                                        {historyWatering?.map(
+                                            (watering, index) => (
+                                                <tr key={index}>
+                                                    <td>
+                                                        {format(
+                                                            new Date(
+                                                                watering.executeTime
+                                                            ),
+                                                            "HH:mm dd/MM"
+                                                        )}
+                                                    </td>
+                                                    <td>
+                                                        {watering.duration / 60}{" "}
+                                                        phút
+                                                    </td>
+                                                </tr>
+                                            )
+                                        )}
                                     </tbody>
                                 </table>
                             </div>

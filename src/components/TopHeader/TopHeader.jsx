@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, memo } from "react";
 
 import "./TopHeader.css";
 import logo from "../../assets/logo.svg";
@@ -90,7 +90,15 @@ const TopHeader = () => {
                     </span>
                 </div>
             </div>
+            {/* <div className="group-logo"> */}
             <img src={logo} alt="" />
+
+            {/* </div> */}
+            {location.pathname !== "/choose-device" && (
+                <span className="device-name-header">
+                    {sessionStorage.getItem("device")}
+                </span>
+            )}
             <div className="actions-group">
                 <img
                     src={menu}
@@ -115,4 +123,4 @@ const TopHeader = () => {
     );
 };
 
-export default TopHeader;
+export default memo(TopHeader);

@@ -5,6 +5,7 @@
     background-color: #5B913B;
     justify-content: space-between;
     padding-right: 30px;
+    align-items: center;
 }
 
 .actions-group {
@@ -69,4 +70,19 @@
 .actions-group img:hover {
     background-color: #ffffff24;
     border-radius: 5px;
+}
+
+.group-logo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.top-header-container>img {
+    height: 100%;
+}
+
+.device-name-header {
+    color: #ffffffe7;
+    font-size: 25px;
 }

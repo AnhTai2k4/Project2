@@ -14,7 +14,7 @@
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  padding-top: 140px;
+  padding-top: 80px;
 }
 
 .schedule-list-card {
@@ -189,12 +189,18 @@
   gap: 8px;
 }
 
-.schedule-days {
+.schedule-repeat-options label {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 8px;
-  margin-top: 6px;
-  margin-left: 8px;
+}
+
+.schedule-days {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
 }
 
 .day-btn {
@@ -243,6 +249,12 @@
 
 .schedule-save-btn:hover {
   background: #256029;
+}
+
+.schedule-save-btn:disabled {
+  background-color: #388e3c;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .icon {

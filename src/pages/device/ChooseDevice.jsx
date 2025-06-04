@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Box, Typography, Grid, Card, CardContent } from "@mui/material";
-import LocalFloristIcon from "@mui/icons-material/LocalFlorist";
 import { useNavigate } from "react-router-dom";
+
 import TopHeader from "../../components/TopHeader/TopHeader";
 import "./ChooseDevice.css";
 import treeIcon from "../../assets/tree.svg";
@@ -76,15 +76,15 @@ const ChooseDevice = () => {
                 if (response.ok) {
                     const deviceMap = await response.json();
                     // Convert device map to array with colors
-                    const deviceList = Object.entries(deviceMap).map(
-                        ([deviceName, topic], index) => ({
-                            title: deviceName,
-                            topic: topic,
-                            color: ["#FF8080", "#F7D060", "#98D8AA", "#888888"][
-                                index % 4
-                            ],
-                        })
-                    );
+                    const deviceList = deviceMap.map((curr, index) => ({
+                        id: curr.deviceId,
+                        title: curr.deviceName,
+                        topic: curr.topic,
+                        color: ["#FF8080", "#F7D060", "#98D8AA", "#888888"][
+                            index % 4
+                        ],
+                    }));
+
                     setDevices(deviceList);
                 } else {
                     console.error("Failed to fetch devices");
@@ -97,9 +97,39 @@ const ChooseDevice = () => {
         fetchDevices();
     }, [navigate]);
 
-    const handleDelete = (indexToDelete) => {
-        const newDevices = devices.filter((_, i) => i !== indexToDelete);
-        setDevices(newDevices);
+    const handleDelete = async (topic, indexToDelete) => {
+        const token = sessionStorage.getItem("token");
+        if (!token) return;
+
+        const deletedDevice = devices[indexToDelete];
+        setDevices((prevDevices) =>
+            prevDevices.filter((_, i) => i !== indexToDelete)
+        );
+
+        try {
+            const res = await fetch(
+                `${apiUrl}/api/login/devices?topic=${encodeURIComponent(
+                    topic
+                )}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            if (!res.ok) {
+                throw new Error("Server error");
+            }
+        } catch (e) {
+            setDevices((prevDevices) => {
+                const newDevices = [...prevDevices];
+                newDevices.splice(indexToDelete, 0, deletedDevice);
+                return newDevices;
+            });
+            console.error("Delete device error: ", e);
+        }
     };
 
     return (
@@ -128,10 +158,14 @@ const ChooseDevice = () => {
                                         "device",
                                         device.title
                                     );
+                                    sessionStorage.setItem(
+                                        "deviceId",
+                                        device.id
+                                    );
                                     navigate("/machine");
                                 }}
                                 deleteDevice={() => {
-                                    handleDelete(index);
+                                    handleDelete(device.topic, index);
                                 }}
                             />
                         </Grid>
