@@ -19,7 +19,10 @@ import pumpIcon from "../../assets/pump.svg";
 import airIcon from "../../assets/humidity_air.svg";
 import earthIcon from "../../assets/humidity_earth.svg";
 import apiUrl from "../../config/api";
-import { connectWebSocket } from "../../services/wsClient";
+import {
+    connectWebSocket,
+    subscribeToSensorData,
+} from "../../services/wsClient";
 import CustomTooltip from "../../components/CustomToolTip/CustomToolTip";
 
 export default function Machine() {
@@ -34,13 +37,26 @@ export default function Machine() {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        const handleMessage = (message) => {
-            const data = JSON.parse(message);
-            setAirHumidity(data.air);
-            setSoilHumidity(data.soil);
-            setTemperature(data.temp);
+        connectWebSocket(sessionStorage.getItem("topic"));
+
+        const unsubscribe = subscribeToSensorData((message) => {
+            try {
+                const data = JSON.parse(message);
+                setAirHumidity(data.air);
+                setSoilHumidity(data.soil);
+                setTemperature(data.temp);
+            } catch (e) {
+                console.error(
+                    "Không parse được JSON từ WebSocket:",
+                    e,
+                    message
+                );
+            }
+        });
+
+        return () => {
+            unsubscribe();
         };
-        connectWebSocket(sessionStorage.getItem("topic"), handleMessage);
     }, []);
 
     useEffect(() => {
@@ -118,6 +134,35 @@ export default function Machine() {
             if (res.ok) {
                 getHistoryWatering();
             }
+        } catch (e) {
+            console.error("Pump error: ", e);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleStopPump = async () => {
+        const token = sessionStorage.getItem("token");
+        if (!token) return;
+
+        setIsLoading(true);
+        const sendRequest = async () => {
+            return await fetch(`${apiUrl}/api/watering/stop`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    deviceId: sessionStorage.getItem("deviceId"),
+                    deviceName: sessionStorage.getItem("device"),
+                    duration: 0,
+                }),
+            });
+        };
+
+        try {
+            sendRequest();
         } catch (e) {
             console.error("Pump error: ", e);
         } finally {
@@ -348,12 +393,20 @@ export default function Machine() {
                                         </div>
                                     </label>
                                 </div>
-                                <button
-                                    className="machine-pump-btn"
-                                    onClick={handlePump}
-                                >
-                                    Bơm ngay
-                                </button>
+                                <div className="group-btn-pump pump-group">
+                                    <button
+                                        className="machine-pump-btn"
+                                        onClick={handlePump}
+                                    >
+                                        Bơm ngay
+                                    </button>
+                                    <button
+                                        className="machine-pump-btn"
+                                        onClick={handleStopPump}
+                                    >
+                                        Dừng bơm
+                                    </button>
+                                </div>
                             </div>
                             <div style={{ width: "100%" }}>
                                 <table className="machine-pump-table">

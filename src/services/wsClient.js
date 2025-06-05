@@ -5,30 +5,31 @@ import apiUrl from "../config/api";
 const socketUrl = `${apiUrl}/websocket`;
 
 let stompClient = null;
+let connected = false;
+let subscribers = [];
+let latestMessage = null;
 
 const log = (msg) => console.log("[WebSocket] " + msg);
 
-/**
- * Kết nối WebSocket và gọi callback khi nhận message
- * @param {string} topic - Tên topic để subscribe
- * @param {(message: string) => void} onMessageCallback - Callback để xử lý message
- */
-export const connectWebSocket = (topic, onMessageCallback) => {
+export const connectWebSocket = (topic) => {
+    if (connected || stompClient) return;
+
     stompClient = new Client({
         webSocketFactory: () => new SockJS(socketUrl),
         connectHeaders: {
             Authorization: "Bearer " + sessionStorage.getItem("token"),
         },
         onConnect: (frame) => {
+            connected = true;
             log("WebSocket connected: " + frame);
-            stompClient.subscribe("/topic/data/" + topic, (message) => {
+
+            stompClient.subscribe(`/topic/data/${topic}`, (message) => {
                 log("📨 " + message.body);
-                if (
-                    onMessageCallback &&
-                    typeof onMessageCallback === "function"
-                ) {
-                    onMessageCallback(message.body);
-                }
+                latestMessage = message.body;
+
+                sessionStorage.setItem("lastSensorData", latestMessage);
+
+                subscribers.forEach((cb) => cb(latestMessage));
             });
         },
         onStompError: (frame) => {
@@ -38,9 +39,29 @@ export const connectWebSocket = (topic, onMessageCallback) => {
         onWebSocketError: (error) => {
             log("WebSocket error: " + error);
         },
+        onDisconnect: () => {
+            connected = false;
+        },
     });
 
     stompClient.activate(); // Bắt đầu kết nối
+};
+
+export const subscribeToSensorData = (callback) => {
+    if (typeof callback === "function") {
+        subscribers.push(callback);
+        // Gửi dữ liệu mới nhất nếu có
+        if (latestMessage) {
+            callback(latestMessage);
+        } else {
+            const cached = sessionStorage.getItem("lastSensorData");
+            if (cached) callback(cached);
+        }
+    }
+
+    return () => {
+        subscribers = subscribers.filter((cb) => cb !== callback);
+    };
 };
 
 export const disconnectWebSocket = () => {
@@ -48,4 +69,7 @@ export const disconnectWebSocket = () => {
         stompClient.deactivate();
         log("WebSocket disconnected");
     }
+    stompClient = null;
+    connected = false;
+    subscribers = [];
 };
