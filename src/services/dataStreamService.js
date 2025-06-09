@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { object } from 'yup';
 
-const API_URL = 'http://localhost:8080/api/data-streaming';
+const API_URL = import.meta.env.VITE_API_URL + '/api/data-streaming';
 
 export const dataStreamService = {
     // Subscribe to a topic
