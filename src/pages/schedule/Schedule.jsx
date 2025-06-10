@@ -18,65 +18,6 @@ export default function Schedule() {
         FRIDAY: "T6",
         SATURDAY: "T7",
     });
-    // State mẫu cho lịch tưới
-    const [schedules, setSchedules] = useState([
-        {
-            time: "6:30",
-            repeat: "Hàng ngày",
-            duration: 500,
-            enabled: false,
-            days: [],
-        },
-        {
-            time: "18:30",
-            repeat: "T2, T4, T6",
-            duration: 250,
-            enabled: true,
-            days: [2, 4, 6],
-        },
-        {
-            time: "18:30",
-            repeat: "T2, T4, T6",
-            duration: 250,
-            enabled: true,
-            days: [2, 4, 6],
-        },
-        {
-            time: "18:30",
-            repeat: "T2, T4, T6",
-            duration: 250,
-            enabled: true,
-            days: [2, 4, 6],
-        },
-        {
-            time: "18:30",
-            repeat: "T2, T4, T6",
-            duration: 250,
-            enabled: true,
-            days: [2, 4, 6],
-        },
-        {
-            time: "18:30",
-            repeat: "T2, T4, T6",
-            duration: 250,
-            enabled: true,
-            days: [2, 4, 6],
-        },
-        {
-            time: "18:30",
-            repeat: "T2, T4, T6",
-            duration: 250,
-            enabled: true,
-            days: [2, 4, 6],
-        },
-        {
-            time: "18:30",
-            repeat: "T2, T4, T6",
-            duration: 250,
-            enabled: true,
-            days: [2, 4, 6],
-        },
-    ]);
     // State cho form thêm mới
     const [form, setForm] = useState({
         time: "",

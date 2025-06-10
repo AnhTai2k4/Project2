@@ -429,7 +429,10 @@ export default function Machine() {
                                                         )}
                                                     </td>
                                                     <td>
-                                                        {watering.duration / 60}{" "}
+                                                        {(
+                                                            watering.duration /
+                                                            60
+                                                        ).toFixed(2)}{" "}
                                                         phút
                                                     </td>
                                                 </tr>
