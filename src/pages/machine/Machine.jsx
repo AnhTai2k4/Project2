@@ -164,8 +164,10 @@ export default function Machine() {
 
         try {
             const res = await sendRequest();
-            if (res.ok)
+            if (res.ok) {
                 toast.success("Dừng bơm thành công", { autoClose: 1000 });
+                getHistoryWatering();
+            }
         } catch (e) {
             console.error("Pump error: ", e);
         } finally {
