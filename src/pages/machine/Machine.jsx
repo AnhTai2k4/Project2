@@ -11,6 +11,7 @@ import {
 import { useState, useEffect } from "react";
 import { PropagateLoader } from "react-spinners";
 import { format } from "date-fns";
+import { toast } from "react-toastify";
 
 import "./Machine.css";
 import Header from "../../components/Header/Header";
@@ -162,7 +163,9 @@ export default function Machine() {
         };
 
         try {
-            sendRequest();
+            const res = await sendRequest();
+            if (res.ok)
+                toast.success("Dừng bơm thành công", { autoClose: 1000 });
         } catch (e) {
             console.error("Pump error: ", e);
         } finally {

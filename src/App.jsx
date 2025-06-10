@@ -5,6 +5,7 @@ import {
     Route,
     Navigate,
 } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
 import "./App.css";
 import Login from "./pages/auth/Login.jsx";
@@ -18,6 +19,7 @@ import ConfigSuccess from "./pages/ConfigSuccess/ConfigSuccess.jsx";
 function App() {
     return (
         <Router>
+            <ToastContainer />
             <Routes>
                 <Route path="/config" element={<Config />} />
                 <Route path="/register" element={<Register />} />
