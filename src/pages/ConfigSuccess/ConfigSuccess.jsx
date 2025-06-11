@@ -63,6 +63,8 @@ const ConfigSuccess = () => {
                 if (res.status === 200) {
                     const data = await res.json();
                     sessionStorage.setItem("topic", data.topic);
+                    sessionStorage.setItem("device", device.name);
+                    sessionStorage.setItem("deviceId", device.id);
                     navigate(`/machine`);
                 } else {
                     alert("Unexpected error. Please try again.");

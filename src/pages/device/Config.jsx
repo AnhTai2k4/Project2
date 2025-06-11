@@ -7,20 +7,18 @@ import "./Config.css";
 const Config = () => {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+
     const checkConfigWifi = () => {
         setIsLoading(true);
-        fetch("http://192.168.4.1", { mode: "no-cors" })
-            .then(() => {
-                window.location.href = "http://192.168.4.1";
-            })
-            .catch((e) => {
-                alert(
-                    "Bạn chưa kết nối WiFi ESP_Config. Vui lòng kết nối và thử lại."
-                );
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
+        try {
+            window.location.href = "http://192.168.4.1";
+        } catch (e) {
+            alert(
+                "Bạn chưa kết nối WiFi ESP_Config. Vui lòng kết nối và thử lại."
+            );
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
