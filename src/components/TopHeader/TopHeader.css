@@ -86,3 +86,32 @@
     color: #ffffffe7;
     font-size: 25px;
 }
+
+.menu-mobile>.page-nav:nth-child(4),
+.menu-mobile>.page-nav:nth-child(5) {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .top-header-container>img {
+        display: none;
+    }
+
+    .actions-group img:nth-child(2),
+    .actions-group img:nth-child(3) {
+        display: none;
+    }
+
+    .top-header-container {
+        padding: 0 20px;
+    }
+
+    .menu-mobile>.page-nav:nth-child(4),
+    .menu-mobile>.page-nav:nth-child(5) {
+        display: block;
+    }
+
+    .menu {
+        right: 20px;
+    }
+}

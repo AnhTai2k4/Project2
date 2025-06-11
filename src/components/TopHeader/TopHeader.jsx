@@ -24,7 +24,7 @@ const TopHeader = () => {
                     setIsCloseUserBox(true);
                 }}
             ></div>
-            <div className={`menu ${isCloseMenu ? "hidden" : ""}`}>
+            <div className={`menu menu-mobile ${isCloseMenu ? "hidden" : ""}`}>
                 <div
                     className="page-nav"
                     onClick={() => {
@@ -61,21 +61,6 @@ const TopHeader = () => {
                         Lên lịch
                     </span>
                 </div>
-            </div>
-            <div className={`menu user-box ${isCloseUserBox ? "hidden" : ""}`}>
-                <div
-                    className="page-nav"
-                    onClick={() => {
-                        navigate("/login");
-                        setIsCloseUserBox(true);
-                    }}
-                >
-                    {" "}
-                    <span>
-                        <i className="fa-solid fa-arrow-right-from-bracket"></i>
-                        Đăng xuất
-                    </span>
-                </div>
                 <div
                     className="page-nav"
                     onClick={() => {
@@ -87,6 +72,57 @@ const TopHeader = () => {
                     <span>
                         <i className="fa-solid fa-plus"></i>
                         Thêm thiết bị
+                    </span>
+                </div>
+                <div
+                    className="page-nav"
+                    onClick={() => {
+                        sessionStorage.removeItem("token");
+                        sessionStorage.removeItem("device");
+                        sessionStorage.removeItem("deviceId");
+                        sessionStorage.removeItem("lastSensorData");
+                        sessionStorage.removeItem("topic");
+                        navigate("/login");
+                        setIsCloseUserBox(true);
+                    }}
+                >
+                    {" "}
+                    <span>
+                        <i className="fa-solid fa-arrow-right-from-bracket"></i>
+                        Đăng xuất
+                    </span>
+                </div>
+            </div>
+            <div className={`menu user-box ${isCloseUserBox ? "hidden" : ""}`}>
+                <div
+                    className="page-nav"
+                    onClick={() => {
+                        navigate("/config");
+                        setIsCloseUserBox(true);
+                    }}
+                >
+                    {" "}
+                    <span>
+                        <i className="fa-solid fa-plus"></i>
+                        Thêm thiết bị
+                    </span>
+                </div>
+                <div
+                    className="page-nav"
+                    onClick={() => {
+                        sessionStorage.removeItem("token");
+                        sessionStorage.removeItem("device");
+                        sessionStorage.removeItem("deviceId");
+                        sessionStorage.removeItem("lastSensorData");
+                        sessionStorage.removeItem("topic");
+                        navigate("/login");
+                        setIsCloseUserBox(true);
+                    }}
+                >
+                    {" "}
+                    <span>
+                        <i className="fa-solid fa-arrow-right-from-bracket"></i>
+                        Đăng xuất
                     </span>
                 </div>
             </div>

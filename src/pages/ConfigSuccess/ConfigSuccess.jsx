@@ -6,7 +6,7 @@ import { jwtDecode } from "jwt-decode";
 import apiUrl from "../../config/api";
 
 const ConfigSuccess = () => {
-    const [device, setDevice] = useState(null);
+    const [device, setDevice] = useState({ name: "", id: "" });
     const [errors, setErrors] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
@@ -49,7 +49,7 @@ const ConfigSuccess = () => {
         try {
             let isValid = true;
             for (let prop in device) {
-                if (device[prop] === "") {
+                if (device[prop].trim() === "") {
                     setErrors((prevErrors) => ({
                         ...prevErrors,
                         [prop]: "Required",

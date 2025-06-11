@@ -71,3 +71,15 @@
 .icon-btn i {
     margin-left: 5px;
 }
+
+@media (max-width: 768px) {
+    .config-container {
+        padding-top: 100px;
+    }
+
+    .config-container>span {
+        text-align: center;
+        padding: 0 20px;
+        margin-bottom: 30px;
+    }
+}

@@ -263,17 +263,19 @@
 }
 
 /* Responsive */
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .schedule-root {
     flex-direction: column;
     gap: 18px;
     padding: 12px;
+    margin-top: 60px;
   }
 
   .schedule-form-card {
     min-width: 0;
     max-width: 100%;
   }
+
 }
 
 .delete-btn img {

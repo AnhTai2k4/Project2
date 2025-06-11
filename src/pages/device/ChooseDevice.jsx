@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Box, Typography, Grid, Card, CardContent } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 import TopHeader from "../../components/TopHeader/TopHeader";
 import "./ChooseDevice.css";
@@ -137,7 +138,10 @@ const ChooseDevice = () => {
             <TopHeader />
             <div className="devices">
                 <Box sx={{ mt: 4, mb: 3 }}>
-                    <Typography variant="h6">Xin chào, Username!</Typography>
+                    <Typography variant="h6">
+                        Xin chào,{" "}
+                        {jwtDecode(sessionStorage.getItem("token")).sub}!
+                    </Typography>
                     <Typography variant="subtitle1" color="text.secondary">
                         Chọn một trong các thiết bị:
                     </Typography>
@@ -171,6 +175,14 @@ const ChooseDevice = () => {
                         </Grid>
                     ))}
                 </Grid>
+            </div>
+            <div
+                className="add-new-device mobile"
+                onClick={() => {
+                    navigate("/config");
+                }}
+            >
+                <i class="fa-solid fa-plus" />
             </div>
         </div>
     );

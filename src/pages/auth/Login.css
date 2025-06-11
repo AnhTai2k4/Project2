@@ -114,3 +114,19 @@
     cursor: pointer;
     font-weight: 600;
 }
+
+@media (max-width: 768px) {
+    .login-container {
+        padding: 20px;
+        padding-top: 120px;
+    }
+
+    .login-box {
+        width: 100%;
+    }
+
+    .login-container img {
+        height: 80px;
+        margin-bottom: 50px;
+    }
+}

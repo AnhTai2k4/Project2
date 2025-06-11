@@ -224,6 +224,82 @@ export default function Machine() {
             <div className="machine-root">
                 <Header />
                 <div className="machine-main scrollable">
+                    <div className="machine-pump-col mobile">
+                        <div className="machine-card top3 machine-pump-card">
+                            <div style={{ width: "100%", marginBottom: 8 }}>
+                                <div className="pump-group">
+                                    <img
+                                        src={pumpIcon}
+                                        alt=""
+                                        className="pump-icon"
+                                    />
+                                    <label style={{ width: "100%" }}>
+                                        <input
+                                            type="range"
+                                            min={0.5}
+                                            max={60}
+                                            step={0.5}
+                                            value={duration}
+                                            onChange={(e) =>
+                                                setDuration(e.target.value)
+                                            }
+                                            className="schedule-slider"
+                                        />
+                                        <div className="schedule-slider-label">
+                                            {duration} phút
+                                        </div>
+                                    </label>
+                                </div>
+                                <div className="group-btn-pump pump-group">
+                                    <button
+                                        className="machine-pump-btn"
+                                        onClick={handlePump}
+                                    >
+                                        Bơm ngay
+                                    </button>
+                                    <button
+                                        className="machine-pump-btn"
+                                        onClick={handleStopPump}
+                                    >
+                                        Dừng bơm
+                                    </button>
+                                </div>
+                            </div>
+                            <div style={{ width: "100%" }}>
+                                <table className="machine-pump-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Thời điểm</th>
+                                            <th>Khoảng thời gian bơm</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {historyWatering?.map(
+                                            (watering, index) => (
+                                                <tr key={index}>
+                                                    <td>
+                                                        {format(
+                                                            new Date(
+                                                                watering.executeTime
+                                                            ),
+                                                            "HH:mm dd/MM"
+                                                        )}
+                                                    </td>
+                                                    <td>
+                                                        {(
+                                                            watering.duration /
+                                                            60
+                                                        ).toFixed(2)}{" "}
+                                                        phút
+                                                    </td>
+                                                </tr>
+                                            )
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                     <div className="machine-cards">
                         <div className="machine-row">
                             {/* Nhiệt độ */}
@@ -372,7 +448,7 @@ export default function Machine() {
                         </div>
                     </div>
                     {/* Card bơm nước */}
-                    <div className="machine-pump-col">
+                    <div className="machine-pump-col desktop">
                         <div className="machine-card top3 machine-pump-card">
                             <div style={{ width: "100%", marginBottom: 8 }}>
                                 <div className="pump-group">
